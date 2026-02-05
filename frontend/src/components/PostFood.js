@@ -48,7 +48,7 @@ const PostFood = () => {
 
   return (
     <div className="form-container">
-      <h2 style={{ textAlign: 'center', color: '#4CAF50', marginBottom: '30px' }}>Post Food for Rescue</h2>
+      <h2 style={{ textAlign: 'center', color: '#28a745', marginBottom: '30px' }}>Post Food for Rescue</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="title">Food Title</label>

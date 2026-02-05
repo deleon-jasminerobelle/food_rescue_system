@@ -9,22 +9,19 @@ const router = express.Router();
 router.post('/register', async (req, res) => {
   const { username, email, password, latitude, longitude } = req.body;
   try {
-    let user = await User.findOne({ email });
+    let user = await User.findOne({ where: { email } });
     if (user) {
       return res.status(400).json({ message: 'User already exists' });
     }
-    user = new User({
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    user = await User.create({
       username,
       email,
-      password,
-      location: {
-        type: 'Point',
-        coordinates: [longitude, latitude],
-      },
+      password: hashedPassword,
+      latitude: latitude || 0,
+      longitude: longitude || 0,
     });
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(password, salt);
-    await user.save();
     const payload = { user: { id: user.id } };
     jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 3600 }, (err, token) => {
       if (err) throw err;
@@ -39,7 +36,7 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ where: { email } });
     if (!user) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }

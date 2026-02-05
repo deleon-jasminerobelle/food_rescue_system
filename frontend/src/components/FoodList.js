@@ -51,7 +51,7 @@ const FoodList = () => {
 
   return (
     <div>
-      <h2 style={{ textAlign: 'center', color: '#4CAF50', marginBottom: '30px' }}>Nearby Available Food</h2>
+      <h2 style={{ textAlign: 'center', color: '#28a745', marginBottom: '30px' }}>Nearby Available Food</h2>
       {foods.length === 0 ? (
         <div className="card" style={{ textAlign: 'center' }}>
           <p>No nearby food available at the moment. Check back later!</p>
