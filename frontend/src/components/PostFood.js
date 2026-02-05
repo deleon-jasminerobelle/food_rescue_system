@@ -1,5 +1,20 @@
 import React, { useState } from 'react';
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 import API from '../services/api';
+
+// Component to handle map clicks for setting location
+function LocationMarker({ position, setPosition }) {
+  useMapEvents({
+    click(e) {
+      setPosition([e.latlng.lat, e.latlng.lng]);
+    },
+  });
+
+  return position === null ? null : (
+    <Marker position={position}></Marker>
+  );
+}
 
 const PostFood = () => {
   const [formData, setFormData] = useState({ title: '', description: '', quantity: '', latitude: '', longitude: '', address: '' });
@@ -79,10 +94,24 @@ const PostFood = () => {
           />
         </div>
         <div className="form-group">
-          <button type="button" className="btn btn-primary" onClick={handleLocation} style={{ width: '100%' }}>
-            Get Current Location
+          <label>Location</label>
+          <button type="button" className="btn btn-secondary" onClick={handleLocation} style={{ width: '100%', marginBottom: '10px' }}>
+            📍 Get Current Location
           </button>
-          <p style={{ marginTop: '10px', fontSize: '14px', color: '#666' }}>
+          <div style={{ height: '300px', marginBottom: '10px' }}>
+            <MapContainer center={[51.505, -0.09]} zoom={13} style={{ height: '100%', width: '100%' }}>
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              <LocationMarker
+                position={formData.latitude && formData.longitude ? [parseFloat(formData.latitude), parseFloat(formData.longitude)] : null}
+                setPosition={(pos) => setFormData({ ...formData, latitude: pos[0].toFixed(6), longitude: pos[1].toFixed(6) })}
+              />
+            </MapContainer>
+          </div>
+          <p style={{ fontSize: '14px', color: '#666' }}>
+            Click on the map to set location or use "Get Current Location".<br />
             Latitude: {formData.latitude}, Longitude: {formData.longitude}
           </p>
         </div>

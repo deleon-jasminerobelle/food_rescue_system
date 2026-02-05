@@ -1,15 +1,39 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/database');
 
-const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  location: {
-    type: { type: String, enum: ['Point'], default: 'Point' },
-    coordinates: { type: [Number], default: [0, 0] }, // [longitude, latitude]
+const User = sequelize.define('User', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
   },
+  username: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  latitude: {
+    type: DataTypes.DECIMAL(10, 8),
+    allowNull: false,
+    defaultValue: 0,
+  },
+  longitude: {
+    type: DataTypes.DECIMAL(11, 8),
+    allowNull: false,
+    defaultValue: 0,
+  },
+}, {
+  tableName: 'users',
+  timestamps: true,
 });
 
-userSchema.index({ location: '2dsphere' });
-
-module.exports = mongoose.model('User', userSchema);
+module.exports = User;

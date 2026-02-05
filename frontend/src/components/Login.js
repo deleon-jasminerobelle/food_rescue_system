@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import API from '../services/api';
 
-const Login = ({ setToken }) => {
+const Login = ({ setToken, setView }) => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -91,6 +91,9 @@ const Login = ({ setToken }) => {
           {isLoading ? 'Logging in...' : 'Login'}
         </button>
       </form>
+      <div style={{ textAlign: 'center', marginTop: '20px' }}>
+        <p>Don't have an account? <button type="button" className="link-button" onClick={() => setView('register')}>Sign up here</button></p>
+      </div>
     </div>
   );
 };

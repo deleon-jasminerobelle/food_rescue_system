@@ -1,20 +1,68 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/database');
+const User = require('./User');
 
-const foodPostSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  quantity: { type: Number, required: true },
-  location: {
-    type: { type: String, enum: ['Point'], default: 'Point' },
-    coordinates: { type: [Number], default: [0, 0] }, // [longitude, latitude]
+const FoodPost = sequelize.define('FoodPost', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
   },
-  address: { type: String },
-  postedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  claimedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  status: { type: String, enum: ['available', 'claimed'], default: 'available' },
-  createdAt: { type: Date, default: Date.now },
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  description: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+  },
+  quantity: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  latitude: {
+    type: DataTypes.DECIMAL(10, 8),
+    allowNull: false,
+    defaultValue: 0,
+  },
+  longitude: {
+    type: DataTypes.DECIMAL(11, 8),
+    allowNull: false,
+    defaultValue: 0,
+  },
+  address: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  postedBy: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: User,
+      key: 'id',
+    },
+  },
+  claimedBy: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: {
+      model: User,
+      key: 'id',
+    },
+  },
+  status: {
+    type: DataTypes.ENUM('available', 'claimed'),
+    defaultValue: 'available',
+  },
+}, {
+  tableName: 'food_posts',
+  timestamps: true,
 });
 
-foodPostSchema.index({ location: '2dsphere' });
+// Define associations
+FoodPost.belongsTo(User, { foreignKey: 'postedBy', as: 'poster' });
+FoodPost.belongsTo(User, { foreignKey: 'claimedBy', as: 'claimer' });
+User.hasMany(FoodPost, { foreignKey: 'postedBy', as: 'postedFoods' });
+User.hasMany(FoodPost, { foreignKey: 'claimedBy', as: 'claimedFoods' });
 
-module.exports = mongoose.model('FoodPost', foodPostSchema);
+module.exports = FoodPost;

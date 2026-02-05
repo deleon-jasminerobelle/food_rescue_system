@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import API from '../services/api';
 
-const Register = ({ setToken }) => {
+const Register = ({ setToken, setView }) => {
   const [formData, setFormData] = useState({ username: '', email: '', password: '', latitude: '', longitude: '' });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
@@ -152,6 +152,9 @@ const Register = ({ setToken }) => {
           {isLoading ? 'Creating account...' : '🚀 Join FoodShare'}
         </button>
       </form>
+      <div style={{ textAlign: 'center', marginTop: '20px' }}>
+        <p>Already have an account? <button type="button" className="link-button" onClick={() => setView('login')}>Login here</button></p>
+      </div>
     </div>
   );
 };

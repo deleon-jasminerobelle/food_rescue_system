@@ -239,3 +239,17 @@
   border-radius: 5px;
   margin-top: 10px;
 }
+
+/* Link button */
+.link-button {
+  background: none;
+  border: none;
+  color: #4CAF50;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: inherit;
+}
+
+.link-button:hover {
+  color: #45a049;
+}

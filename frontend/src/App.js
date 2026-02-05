@@ -37,8 +37,8 @@ function App() {
               </button>
             </div>
           </div>
-          {view === 'login' && <Login setToken={setToken} />}
-          {view === 'register' && <Register setToken={setToken} />}
+          {view === 'login' && <Login setToken={setToken} setView={setView} />}
+          {view === 'register' && <Register setToken={setToken} setView={setView} />}
         </div>
       ) : (
         <div>

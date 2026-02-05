@@ -1,14 +1,19 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const connectDB = require('./config/database');
+const { sequelize, connectDB } = require('./config/database');
+const User = require('./models/User');
+const FoodPost = require('./models/FoodPost');
 
 dotenv.config();
 
 const app = express();
 
-// Connect Database
-connectDB();
+// Connect Database and sync models
+(async () => {
+  await connectDB();
+  await sequelize.sync();
+})();
 
 // Middleware
 app.use(cors());
